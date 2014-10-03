@@ -17,7 +17,7 @@ Dùng lệnh `sh vi /etc/network/interfaces` để thiết lập IP. Lưu ý th�
 apt-get update -y
 apt-get install ntp -y
 ```
-- Sửa file cấu hình /etc/ntp.conf. Comment dòng server ntp.ubuntu.com và chèn ngay dưới đó các dòng. 
+- Sửa file cấu hình `/etc/ntp.conf`. Comment dòng `server ntp.ubuntu.com` và chèn ngay dưới nó các dòng sau. 
 
 ```sh
 server 0.vn.pool.ntp.org iburst
