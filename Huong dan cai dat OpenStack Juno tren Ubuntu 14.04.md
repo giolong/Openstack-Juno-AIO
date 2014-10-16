@@ -9,7 +9,7 @@ Cấu hình như hình dưới
 #### Thiết lập IP, hostname ...
 Cấu hình IP như sau:
 
-Dùng lệnh `sh vi /etc/network/interfaces` để thiết lập IP. Lưu ý thứ tự NICs phải đúng y/c. 
+Dùng lệnh `sudo vi /etc/network/interfaces` để thiết lập IP. Lưu ý thứ tự NICs phải đúng y/c. 
 
 #### Cấu hình NTP
 - Cài đặt gói NTP
@@ -41,7 +41,7 @@ service ntp restart
 
 ntpq -c peers
 ```
-- Kết quả sẽ như hình dưới
+- Kết quả sẽ tương tự như bên dưới.
 ```sh
 openstack:~# ntpq -c peers
      remote           refid      st t when poll reach   delay   offset  jitter
@@ -54,4 +54,40 @@ openstack:~# ntpq -c peers
  localhost       .INIT.          16 l    -   64    0    0.000    0.000   0.000
 ```
 
+#### Cài đặt và cấu hình Database
+- Trong tài liệu này sẽ sử dụng MariaDB (một nhánh của MySQL được hình thành sau khi MySQL được Oracle mua lại). Trong qúa trình cài bạn sẽ nhập mật khẩu cho  tài khoản `root` để đăng nhập vào MariaDB.
+```sh
+apt-get install mariadb-server python-mysqldb -y
+```
+- Sau khi cài đặt xong, dùng vi để sửa file `/etc/mysql/my.cnf`. Tìm dòng có chuỗi `bind-address` và sửa thành.
+```sh
+bind-address 0.0.0.0
+```
+- Chèn vào sau dòng `bind-address 0.0.0.0` vừa sửa ở trên đoạn cấu hình dưới đây.
+```sh
+default-storage-engine = innodb
+innodb_file_per_table
+collation-server = utf8_general_ci
+init-connect = 'SET NAMES utf8'
+character-set-server = utf8
+```
 
+- Khởi động lại mysql và kiểm tra 
+```sh
+openstack:~# mysql -u root -p
+```
+- Kết quả như dưới
+```sh
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 28
+Server version: 5.5.39-MariaDB-0ubuntu0.14.04.1 (Ubuntu)
+
+Copyright (c) 2000, 2014, Oracle, Monty Program Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]>
+MariaDB [(none)]>
+
+```
